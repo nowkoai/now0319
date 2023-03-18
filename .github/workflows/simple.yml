@@ -1,29 +1,24 @@
-name: Actions Workflow
- 
-on: [push]
- 
+name: Action Sample
+
+on:
+  push:
+    branches: 
+      - master
+  workflow_dispatch:
+
 jobs:
-  run-github-actions:
+  numpy-test:
     runs-on: ubuntu-latest
     steps:
-      - name: List Files
-        run: |
-          pwd
-          ls -a
- 
-          # GitHub環境変数
-          echo $GITHUB_SHA
-          echo $GITHUB_REPOSITORY
-          echo $GITHUB_WORKSPACE
-          echo "${{ github.token }}"
- 
-          # 環境変数を利用してのgit操作
-          # git clone git@github:$GITHUB_REPOSITORY
-          # git checkout $GITHUB_SHA
-      - name: checkout
-        uses: actions/checkout@v1
-      - name: List Files After Checkout
-        run: |
-          pwd
-          ls -a
- 
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+          architecture: 'x64'
+      - name: Get Python version
+        run: python -V
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run Python
+        run: python python-sample.py
